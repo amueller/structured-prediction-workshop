@@ -1,0 +1,792 @@
+\documentclass[final,ignorenonframetext,compress]{beamer}
+\usetheme{Madrid}
+\useoutertheme{default}
+\setbeamertemplate{navigation symbols}{}%remove navigation symbols
+
+
+\setbeamertemplate{section page}{%
+    \begin{centering}
+    \usebeamerfont{section title}\insertsection\par
+    \end{centering}
+}
+
+\AtBeginSection{\frame{\sectionpage}}
+%\AtBeginSubsection{\frame{\subsectionpage}}
+
+\usepackage[backend=biber,citestyle=authoryear]{biblatex}
+\addbibresource{paper.bib}
+\usepackage{booktabs}
+\usepackage{tabularx}
+
+\DeclareMathOperator*{\mymax}{max}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\ForAll}{\bigwedge}
+\DeclareMathOperator*{\Exists}{\bigvee}
+\newcommand{\hoch}[1]{^{#1}}
+\newcommand{\W}{\mathcal{W}}
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+% or whatever
+
+\usepackage{algorithm}
+\usepackage{setspace}
+\usepackage{mdwlist}
+\usepackage{tabularx}
+\usepackage[noend]{algpseudocode}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{multicol}
+\usepackage{mdwtab}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{txfonts,textcomp}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\setlength\parindent{0cm}
+\setlength\parskip{2mm}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+\newcommand{\given}{\, | \,}
+
+\newcommand{\B}[1]{\textbf{#1}}
+
+\makeatletter
+\let\OldStatex\Statex
+\renewcommand{\Statex}[1][3]{%
+\setlength\@tempdima{\algorithmicindent}%
+\OldStatex\hskip\dimexpr#1\@tempdima\relax}
+\makeatother
+
+
+\title[Stuctured Prediction] 
+{Introduction to Structured Prediction (with Python)}
+
+
+\author% (optional, use only with lots of authors)
+{Andreas C. M\"uller}
+
+\institute[] % (optional, but mostly needed)
+{%
+    Columbia University
+}
+
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}
+    \tableofcontents
+\end{frame}
+
+\begin{frame}
+    \frametitle{Semantic Segmentation}
+        \begin{figure}
+            \includegraphics[width=.4 \textwidth]{images/pascal}
+            \begin{visibleenv}<2->
+                \includegraphics[width=.4 \textwidth]{images/pascal_gt}
+            \end{visibleenv}
+        \end{figure}
+\end{frame}
+
+% output space combinatorial
+% output space depends on input space
+% model correlations
+\begin{frame}
+    \frametitle{Multi-Label Classification}
+
+    \begin{table}
+        \begin{tabularx}{\linewidth}{lccccc}
+            \toprule
+            & \footnotesize{Politics} & \footnotesize{Sports} & \footnotesize{Finance} & \footnotesize{Domestic} & \footnotesize{Religion}\\
+            \cmidrule{2-6}
+            News Story1 & 1 & 0 & 0 & 1 & 1\\
+            News Story2 & 0 & 1 & 0 & 1 & 0\\
+            News Story3 & 0 & 0 & 1 & 0 & 0\\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+
+    \begin{visibleenv}<2>
+    \begin{table}
+        \begin{tabularx}{\linewidth}{lccccc}
+            \toprule
+            & \footnotesize{Owns Car} & \footnotesize{Smokes} & \footnotesize{Married} & \footnotesize{Self-Employed} & \footnotesize{Has Kids}\\
+            \cmidrule{2-6}
+            Customer1 & 1 & 0 & 1 & 0 & 1\\
+            Customer2 & 1 & 1 & 0 & 1 & 0\\
+            Customer3 & 0 & 1 & 1 & 0 & 0\\
+            \bottomrule
+        \end{tabularx}
+    \end{table}
+    \end{visibleenv}
+    
+\end{frame}
+
+\begin{frame}
+    \frametitle{Sequence Tagging}
+    \begin{columns}[t]
+        \column{.2\linewidth}
+        \includegraphics[width=\linewidth]{images/stroke1}\\
+        \begin{visibleenv}<2->
+            \tiny{Stroke cat.}
+        \end{visibleenv}
+
+        \column{.2\linewidth}
+        \includegraphics[width=\linewidth]{images/stroke2}\\
+        \begin{visibleenv}<2->
+        \tiny Stroke cat.
+        \end{visibleenv}
+
+        \column{.2\linewidth}
+        \includegraphics[width=\linewidth]{images/stroke3}\\
+        \begin{visibleenv}<2->
+        \tiny Stroke cat.
+        \end{visibleenv}
+
+        \column{.2\linewidth}
+        \includegraphics[width=\linewidth]{images/open_trash_can}\\
+        \begin{visibleenv}<2->
+            \tiny{Open trash can.}
+        \end{visibleenv}
+
+        \column{.2\linewidth}
+        \includegraphics[width=\linewidth]{images/cat_in_trashcan}\\
+        \begin{visibleenv}<2->
+            \tiny{Put cat in trash can.}
+        \end{visibleenv}
+    \end{columns}
+\vspace{5mm}
+\begin{center}
+\begin{visibleenv}<3->
+        \includegraphics[width=.8\linewidth]{images/speech}\\
+\end{visibleenv}
+\begin{visibleenv}<4->
+            Struc-tured pre-dic-tion in Py-thon
+\end{visibleenv}
+\end{center}
+\end{frame}
+
+
+
+% \section{Structured Prediction for Semantic Segmentation}
+% \begin{frame}
+%     \frametitle{Semantic Segmentation as Structured Prediction}
+%     \begin{figure}
+%         \begin{onlyenv}<1>
+%             \includegraphics[width=.6\linewidth]{images/scene_sp_org}%
+%         \end{onlyenv}%
+%         \begin{onlyenv}<2>
+%             \includegraphics[width=.6\linewidth]{images/scene_sp}%
+%         \end{onlyenv}%
+%         \begin{onlyenv}<3>
+%             \includegraphics[width=.6\linewidth]{images/scene_sp_gt}%
+%         \end{onlyenv}%
+%         \begin{onlyenv}<4>
+%             \includegraphics[width=.6\linewidth]{images/scene_sp_graph}%
+%         \end{onlyenv}%
+%     \end{figure}
+% \end{frame}
+
+\begin{frame}
+    \frametitle{Predicting Structured Objects}
+    \[f(x, w) := \argmax_{y \in \mathcal{Y}}  g(x, y, w) \]
+    \begin{visibleenv}<2->
+    If you like:
+    \[\argmax_{y \in \mathcal{Y}}  p(y|x, w) \]
+    \end{visibleenv}
+    
+    \begin{visibleenv}<3>
+    \[f(x, w) := \argmax_{y \in \mathcal{Y}}  w^T \psi(x, y) \]
+    \end{visibleenv}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Predicting discrete vectors}
+    \[y = (y_1, y_2, \dotsc, y_{n_i})\]
+    \begin{visibleenv}<2>
+        \begin{align*}
+        f(x, w) &= \argmax_{y \in \mathcal{Y}}  w^T \psi(x, y)\\
+            &= \argmax_{y_1, y_2, \dotsc, y_{n_i}} w^T \psi(x, y)
+        \end{align*}
+    \end{visibleenv}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Factor Graphs}
+    \begin{columns}[c]
+        \column{.6\linewidth}
+        \begin{align*}
+        g(x, y) &= g_1(x, y_1, y_2, y_3) + g_2(x, y_3, y_4)\\
+                &+ g_3(x, y_4) + g_4(x, y_4, y_5, y_6)
+        \end{align*}
+        \column{.3\linewidth}
+            \includegraphics[width=\textwidth]{images/factor_graph_white_bg}
+    \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Pairwise Models}
+    \begin{centering}
+        \begin{figure}
+            \includegraphics[width=.7\linewidth]{images/pairwise_factorgraph2}
+        \end{figure}
+    \end{centering}
+    \vspace{5mm}
+    \[w^T \psi(x, y) = \sum_{(i, j) \in E} w_{i,j} \psi_{i,j}(x, y_i, y_j) + \sum_{i\in I} w_i \psi_i(x, y_i)\]
+\end{frame}
+
+\begin{frame}
+    \frametitle{Factor Graph for HMM}
+    \begin{center}
+        \includegraphics[width=.8\textwidth]{images/hmm_white_bg}
+    \end{center}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Factor Graphs Mulit-Label Classification}
+    \begin{center}
+        %%\includegraphics[width=.8\textwidth]{images/hmm_white_bg}
+    \end{center}
+    FIXME full, chow liu
+\end{frame}
+
+
+
+\begin{frame}
+    \frametitle{Inference}
+    \begin{columns}[t]
+        \column{.5\linewidth}
+        Easy\\
+        \vspace{5mm}
+        \includegraphics[width=.8\textwidth]{images/tree_white_bg}
+        \column{.5\linewidth}
+        Tricky\\
+        \vspace{5mm}
+        \includegraphics[width=.8\textwidth]{images/grid_white_bg}
+    \end{columns}
+\end{frame}
+
+\section{Inference Algorithms}
+\begin{frame}
+    \frametitle{Brute Force}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Sum-Product (Viterbi)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Sampling}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Relaxations}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Move-making}
+\end{frame}
+
+\section{Learning Algorithms}
+
+\begin{frame}
+    \frametitle{Probabilistic Learning}
+    \[ p(y|x, w) = \frac{1}{Z} exp(w^T \psi(x, y))\]
+    \[Z = \sum_{y' \in \mathcal{Y}} exp(w^T \psi(x, y')) \]
+    \begin{visibleenv}<2->
+    Objective
+    \begin{align*}
+        \max_w \sum_i \log(p(y\hoch{i} | x\hoch{i}, w))\\
+        = \max_w \sum_i w^T \psi(x\hoch{i}, y\hoch{i}) - \log(Z)
+    \end{align*}
+    \end{visibleenv}
+    FIXME relate to LogisticRegression
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Max-Margin Learning}
+    Learn prediction function of the form
+    \[g(x, w) := \argmax_{y \in \mathcal{Y}}  w^T \psi(x, y) \]
+    \begin{visibleenv}<2->
+        Objective
+        \begin{align*}
+            &\min_w \frac{1}{2} ||w||^2 + C \sum_i  \ell(x\hoch{i}, y\hoch{i}, w)\\
+            &\ell(x\hoch{i}, y\hoch{i}, w) = [\max_{y \in \mathcal{Y}} \Delta(y\hoch{i}, y) + w^T \psi(x\hoch{i}, y) - w^T \psi(x\hoch{i}, y\hoch{i})]_+.
+        \end{align*}
+    \cite{joachims2009cutting}
+    \end{visibleenv}
+    FIXME relate to SVM
+    Advantage: no partition function
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Subgradient learning}
+\end{frame}
+
+\begin{frame}
+    \frametitle{N-Slack Quadratic Programming}
+\end{frame}
+
+\begin{frame}{$n$-slack Cutting Plane Algorithm}
+    \addtocounter{framenumber}{-1}
+    \frametitle{$n$-Slack Cutting Plane Training of Structural SVMs}
+    \tiny
+    \setstretch{2}
+    \begin{algorithmic}[1]
+        \Require training samples $\{ (x\hoch{1}, y\hoch{1}), \dots, (x\hoch{k}, y\hoch{k})\}$, regularization parameter $C$, stopping tolerance $\epsilon$.
+        \Ensure parameters $\theta$, slack $(\xi_1, \dotsc, \xi_k)$
+        \State $\W_i \leftarrow \varnothing, \xi_i \leftarrow 0 \text{ for } i=1,\dots,k$
+        \Repeat
+            \For {i=1, \dots, k}
+                \State
+                $\hat{y} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] $
+                \If{$\displaystyle \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] \geq \xi_i + \epsilon$}
+                \State \hspace{-3mm}$\W_i \leftarrow \W_i \cup \{ \hat{y}\} $
+                    \State
+                    \vspace{-5mm}
+                    \begin{flalign*}
+                        \qquad\qquad(\theta, \xi_1, \dots, \xi_k) \leftarrow \displaystyle \argmin_{\theta, \xi_1, \dots, \xi_k}& \frac{||\theta||}{2}^2 + C \sum_{i=1}^k\xi_i&\\
+                        \text{s.t. }& \text{for } i=1,\dots,k\ \forall \hat{y} \in \W_i:&\\
+                                    &\theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y}\hoch{i})] \geq \delta(y\hoch{i}, \hat{y}\hoch{i}) - \xi_i&
+                    \end{flalign*}
+                \EndIf
+            \EndFor
+            \vspace{-10mm}
+            \Until no $\W_i$ changes anymore.
+        \end{algorithmic}
+    %\end{doublespacing}
+\end{frame}
+
+\begin{frame}
+    \frametitle{1-Slack Quadratic Programming}
+\end{frame}
+
+\begin{frame}
+    \frametitle{$1$-Slack Cutting Plane Training of Structural SVMs}
+    \addtocounter{framenumber}{-1}
+    \tiny
+    \setstretch{2}
+    \begin{algorithmic}[1]
+        \Require training samples $\{ (x\hoch{i}, y\hoch{i}), \dots, (x\hoch{i}, y\hoch{i})\}$, regularization parameter $C$, stopping tolerance $\epsilon$.
+        \Ensure parameters $\theta$, slack $\xi$
+        \State $\W \leftarrow \emptyset$
+        \Repeat
+            \State 
+            \vspace{-5mm}
+            \begin{flalign*}
+                \quad\,\,(\theta, \xi) \leftarrow \displaystyle \argmin_{\theta, \xi}&\frac{||\theta||}{2}^2 + C \xi&\\
+                \text{s.t. }&\forall \hat{\mathbf{y}}=(\hat{y}\hoch{1}, \dots, \hat{y}\hoch{k}) \in \W:&\\
+                            &\theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y}\hoch{i})] \geq \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}\hoch{i}) - \xi&
+            \end{flalign*}
+            \For {i=1, \dots, k}
+                \State
+                $\hat{y}\hoch{i} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}) - \theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$ \label{get_cutting_plane}
+            \EndFor
+            \State $\W \leftarrow \W \cup \{ (\hat{y}\hoch{i}, \dots, \hat{y}\hoch{i}) \} $
+            \State $ \displaystyle \xi' \leftarrow  \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}\hoch{i}) - \theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y}\hoch{i})] $
+        \Until $\xi' - \xi < \epsilon$ \label{convergence_check}
+    \end{algorithmic}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Frank Wolfe}
+\end{frame}
+
+
+\begin{frame}
+    \frametitle{Block-Coordinate Frank-Wolfe Algorithm}
+    \tiny
+    \setstretch{1.4}
+    \begin{algorithmic}[1]
+        \Require training samples $\{ (x\hoch{i}, y\hoch{i}), \dots, (x\hoch{i}, y\hoch{i})\}$, regularization parameter $C$, stopping tolerance $\epsilon$.
+        \Ensure parameters $\theta$
+        \State  $\displaystyle \theta_0^{\vphantom{i}}, \theta_0\hoch{i}, \bar{\theta}_0^{\vphantom{i}} \leftarrow \mathbf{0},\quad \ell_0^{\vphantom{i}}, \ell_0\hoch{i}, t \leftarrow 0 $
+        \Repeat
+            \State $t \leftarrow t + 1$
+            \State Pick $i$ uniformly at random from $\{1, \dotsc, k\}$.
+            \State Perform loss-augmented prediction on sample $i$:
+            \Statex[2]   $\hat{y} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \Delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$
+            \State Compute parameter and loss updates based on sample $i$:
+            \Statex[2]     $\theta_s \leftarrow \frac{C}{n} \Phi(x, \hat{y})$
+            \Statex[2]     $\ell_s \leftarrow \frac{C}{n} \delta(y\hoch{i}, \hat{y})$
+            \State Compute optimum step size $\eta$:
+            \Statex[2]    $\eta \leftarrow \frac{(\theta_t\hoch{i} - \theta_s)^T \theta_t + C (\ell_s - \ell_k\hoch{i} )}{\lVert \theta_t\hoch{i} - \theta_s \rVert^2}$ and clip to $[0, 1]$
+            \State Update per-sample parameters and loss estimate:
+            \Statex[2]    $\theta_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \theta_s$
+            \Statex[2]    $\ell_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \ell_s$
+            \State Update global parameters and loss estimate:
+            \Statex[2]   $\theta_{t+1} \leftarrow \theta_{t+1} + \theta_{t}\hoch{i} - \theta_{t+1}\hoch{i}$
+            \Statex[2]   $\ell_{t+1} \leftarrow \ell_{t+1} + \ell_{t}\hoch{i} - \ell_{t+1}\hoch{i}$
+            \State Compute the weighted running average:
+            \Statex[2] $\bar{\theta}_{t+1} = \frac{k}{k + 2} \bar{\theta}_k + \frac{2}{k + 2}\theta_{k+1}$
+        \Until $(\theta - \theta_s)^T\theta - \ell + \ell_s \leq \epsilon$
+        \Statex where $\theta_s$ and $\ell_s$ are recomputed over the whole dataset.
+    \end{algorithmic}
+    %\end{doublespacing}
+\end{frame}
+
+\section{Structured Prediction with PyStruct}
+
+    \begin{frame}
+        \frametitle{Simple structured prediction}
+        Estimator = Learner + Model + Inference\\
+
+        \begin{itemize}
+            \item<2-> Learner: SubgradientSSVM, StructuredPerceptron, OneSlackSSVM, LatentSSVM
+            \item<2-> Model: BinaryClf, MultiLabelClf, ChainCRF, GraphCRF, EdgeFeatureGraphCRF
+            \item<2-> Inference: Linear Programming, QPBO (PyQPBO), Dual Decomposition (AD3), Message Passing, Everything (OpenGM)
+        \end{itemize}
+
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Example OCR}
+        \includegraphics[width=.7\linewidth]{images/code_letters}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Example OCR}
+        \includegraphics[width=.49\linewidth]{images/plot_letters_1}
+        \includegraphics[width=.49\linewidth]{images/plot_letters_2}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Example Snake}
+        \begin{center}
+            \includegraphics[width=.70\linewidth]{images/plot_snakes_1}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}
+        \begin{center}
+            \includegraphics[width=\linewidth]{images/example_gallery}\\
+            http://pystruct.github.io
+        \end{center}
+    \end{frame}
+
+\begin{frame}
+    \frametitle{Multi-Class SVM}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Multi-Label SVM (independent)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Multi-Label SVM (Chow Liu)}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Multi-Label SVM (full)}
+\end{frame}
+
+\section{Latent Variable Models}
+% \section{Learning Depth-Sensitive Conditional Random Fields}
+
+% \begin{frame}
+%     \frametitle{Dataset: NYUv2}
+%     \begin{tabularx}{\linewidth}{@{\extracolsep{\fill}}ccccc}
+
+%         \includegraphics[width=.22\textwidth]{images/00118_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/00118_gt.png}&
+%         \includegraphics[width=.22\textwidth]{images/01203_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/01203_gt.png}\\
+
+%         \includegraphics[width=.22\textwidth]{images/01147_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/01147_gt.png}&
+%         \includegraphics[width=.22\textwidth]{images/00281_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/00281_gt.png}\\
+
+%         \includegraphics[width=.22\textwidth]{images/00191_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/00191_gt.png}&
+%         \includegraphics[width=.22\textwidth]{images/01052_image.png}&%
+%         \includegraphics[width=.22\linewidth]{images/01052_gt.png}\\
+
+%     \end{tabularx}
+%     \includegraphics[width=\linewidth]{images/legend.pdf}\\
+%     795 training images, 654 test images.
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Overview}
+%     \begin{center}
+%         \includegraphics[width=.9\linewidth]{images/teaser}
+%     \end{center}
+% \end{frame}
+
+
+% \begin{frame}
+%     \begin{columns}[c]
+%     \column{.5\linewidth}
+%         \frametitle{Pairwise Features}
+%         \[
+%         f_\text{color}(x_i, x_j) = \exp\left(-\gamma \lVert c_i - c_j \rVert^2\right)
+%          \]
+%             \begin{center}
+%                 \includegraphics[width=.6\linewidth]{images/00062_pipline_feature_pairwise_1_bright}
+%             \end{center}
+%         \[
+%             f_\text{direction}(x_i, x_j) = \sphericalangle(\text{pos}_{x_i} - \text{pos}_{x_j}, [0, 1]^T)
+%          \]
+%         \begin{center}
+%             \includegraphics[width=.6\linewidth]{images/00062_pipline_feature_pairwise_4_bright}
+%         \end{center}
+%     \column{.5\linewidth}
+%         \[
+%             f_\text{depth}(x_i, x_j) = (d_i - d_j) / Z
+%          \]
+%         \begin{center}
+%             \includegraphics[width=.6\linewidth]{images/00062_pipline_feature_pairwise_2_bright}
+%         \end{center}
+%         \[
+%             f_\text{normals}(x_i, x_j) = 1 - \frac{1}{\pi}\sphericalangle(\mathbf{n}_{x_i}, \mathbf{n}_{x_j})
+%          \]
+%         \begin{center}
+%             \includegraphics[width=.6\linewidth]{images/normal_feature_bright}
+%         \end{center}
+%     \end{columns}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Learning and Optimization}
+%     \begin{itemize}
+%         \item $1$-slack SSVM
+%         \item Inference using fusion moves and AD$^3$.
+%         \item Exact learning in loopy model~\parencite{mueller2014_exact}.
+%     \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}
+%     \frametitle{Qualitative Results}
+%     \begin{tabularx}{\linewidth}{@{\extracolsep{\fill}}cccccc}
+%     \footnotesize Input&
+%     \footnotesize Random Forest&
+%     \footnotesize SVM on SP&
+%     \footnotesize CRF&
+%     \footnotesize Ground Truth\\
+
+%     \includegraphics[width=.17\textwidth]{images/00845_image.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00845_pixel.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00845_svm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00845_ssvm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00845_gt.png}\\
+
+%     \includegraphics[width=.17\textwidth]{images/00781_image.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00781_pixel.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00781_svm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00781_ssvm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/00781_gt.png}\\
+
+%     \includegraphics[width=.17\textwidth]{images/01331_image.png}&%
+%     \includegraphics[width=.17\linewidth]{images/01331_pixel.png}&%
+%     \includegraphics[width=.17\linewidth]{images/01331_svm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/01331_ssvm.png}&%
+%     \includegraphics[width=.17\linewidth]{images/01331_gt.png}\\
+
+%     \end{tabularx}
+%     \includegraphics[width=\linewidth]{images/legend.pdf}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Results}
+%     \begin{table}[t]
+%     \begin{tabularx}{\linewidth}{@{\extracolsep{\fill}}lcccccc}
+%     \toprule
+%                             & \footnotesize ground        & \footnotesize  structure    & \footnotesize furniture     & \footnotesize props         & \footnotesize class avg   & \footnotesize pixel avg\\
+%     \cmidrule(r){1-7}
+
+%     \footnotesize RF                              &         90.8  &   81.6        & 67.9          & 19.9          &  65.0        &  68.3 \\
+%     \footnotesize RF + SP                         &         92.5  &   83.3        & \textbf{73.8} & 13.9          &  65.7        &  70.1 \\ 
+%     \footnotesize RF + SP + SVM                   &         94.4  &   79.1        & 64.2          & \textbf{44.0} &  70.4        &  70.3 \\
+%     \footnotesize RF + SP + CRF                   & \textbf{94.9} &   78.9        &          71.1 & 42.7          &\textbf{71.9} &  \textbf{72.3} \\
+%     \cmidrule(r){1-7}
+%     \footnotesize \textcite{SilbermanECCV12}         &         68    &   59          & 70           & 42            &  59.6        & 58.6 \\
+%     \footnotesize \textcite{couprie-iclr-13}         &         87.3  & \textbf{86.1} & 45.3         & 35.5          &  63.5        & 64.5 \\
+%     \cmidrule(r){1-7}
+%     \footnotesize \textcite{stueckler2013}$^\dagger$ & \textbf{95.6} &   83.0        & \textbf{75.1}& 14.2          &  67.0        & 70.9 \\
+
+%     \bottomrule
+%     \end{tabularx}
+%     \end{table}
+% \end{frame}
+
+
+% \begin{frame}
+%     \frametitle{Learned Potentials}
+%     \begin{center}
+%     \includegraphics[width=.45\linewidth]{images/vertical_alignment_png}
+%     \includegraphics[width=.45\linewidth]{images/depth_difference_png}
+%     \begin{visibleenv}<2->
+%     \begin{itemize}
+%         \item Ground is at bottom.
+%         \item Walls are behind other objects.
+%         \item Ground is often in front of other objects.
+%         \item Furniture is in front of the walls.
+%     \end{itemize}
+%     \end{visibleenv}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Summary}
+%     \begin{itemize}
+%         \item Can incorporate geometric relations into CRF.
+%         \item Learn all potentials.
+%         \item Exact learning of CRF possible.
+%     \end{itemize}
+% \end{frame}
+
+% \section{Learning Loopy CRFs Exactly}
+% \begin{frame}
+%     \frametitle{How Intractable Are Loopy Models?}
+%     \begin{columns}[c]
+%         \column{.5\linewidth}
+%         \includegraphics[width=\linewidth]{images/scene_sp_graph}%
+%         \column{.5\linewidth}
+%         \begin{itemize}
+%             \item In general, inference in loopy models is NP-hard.
+%             \item Learning relies on inference.
+%             \item How good can we get in practice?
+%             \item Focusing on 1-slack cutting plane algorithm.
+%         \end{itemize}
+%     \end{columns}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Efficient Caching}
+%         \begin{equation}
+%             \ell(x\hoch{i}, y\hoch{i}, w) = [\max_{y \in \mathcal{Y}} \Delta(y\hoch{i}, y) + w^T \psi(x\hoch{i}, y) - w^T \psi(x\hoch{i}, y\hoch{i})]_+
+%         \end{equation}
+%         \begin{itemize}
+%             \item<1-> Maximizing over $y$ main bottleneck.
+%             \item<2-> Reusing (caching) of previous found maxima can speed up optimization.
+%             \item<3-> Natural trade-off between time spent on finding maximum (inference) and time spent on optimization.
+%             \item<4-> Novel heuristic
+%                 \begin{equation*}
+%                             o^C - o^I < \frac{1}{2} (o^I - o_{\W})
+%                 \end{equation*}
+%                         where $o^C$ is the cached primal, $o^I$ primal using inference $I$ and $o_{\W}$ the dual.
+%         \end{itemize}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Caching Comparison}
+%     \begin{center}
+%         \includegraphics[width=.9\linewidth]{images/caching}
+%     \end{center}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Combining Inference Algorithms}
+%     \begin{columns}
+%         \column{.6\linewidth}
+%         \begin{itemize}
+%             \item<1-> Use fast inference in the beginning, use good inference at the end.
+%             \item<2-> Theoretically sound with cutting plane algorithm.
+%             \item<3-> Combine three procedures using efficient heuristic.
+%             \item<4-> Result: can learn exactly on two popular segmentation benchmarks!
+%         \end{itemize}
+%         \column{.4\linewidth}
+%         \begin{visibleenv}<3->
+%             \includegraphics[width=.7\linewidth]{images/inference_algs}
+%         \end{visibleenv}
+%     \end{columns}
+% \end{frame}
+
+
+% \begin{frame}
+%     \frametitle{Results on Pascal VOC2010 and MSRC-21}
+%     \begin{figure}
+%         \centering
+%         \includegraphics[width=.8\linewidth]{images/results_pascal}
+%     \end{figure}
+%     \vspace{-10mm}
+%     \tiny
+%     \begin{columns}[t]
+%         \column{.4\linewidth}
+%         \begin{table}
+%                 \begin{tabular}{lc}
+%                     \toprule
+%                     Pascal VOC 2010& Jaccard \\
+%                     \cmidrule{1-2}
+%                     Unary terms only &  27.5 \\
+%                     Pairwise model (move making)& 30.2\\
+%                     Pairwise model (exact) & 30.4\\
+%                     \cmidrule{1-2}
+%                     \textcite{dann2012pottics} & 27.4\\
+%                     \textcite{krahenbuhl2012efficient} & 30.2\\
+%                     \textcite{krahenbuhlparameter} & 30.8\\
+%                     \bottomrule
+%                 \end{tabular}
+%         \end{table}
+%         \column{.5\linewidth}
+%         \begin{table}
+%                 \begin{tabular}{lcc}
+%                     \toprule
+%                     MSRC-21 & Average & Global \\
+%                     \cmidrule{1-3}
+%                     Unary terms only & 77.7& 83.2 \\
+%                     Pairwise model (move making)& 79.6&84.6\\
+%                     Pairwise model (exact)& 79.0 & 84.3\\
+%                     \cmidrule{1-3}
+%                     \textcite{ladicky2009associative} & 75.8& 85.0\\
+%                     \textcite{gonfaus2010harmony} & 77&  75\\
+%                     \textcite{lucchi2013learning} & 78.9& 83.7\\
+%                     \bottomrule
+%                 \end{tabular}
+
+%         \end{table}
+%     \end{columns}
+% \end{frame}
+
+% \begin{frame}
+%     \frametitle{Summary}
+%     \begin{itemize}
+%         \item We can learn some interesting loopy models exactly.
+%         \item Move-making was already very close.
+%         \item Exact learning is not necessarily slow ($\approx$5 min).
+%         \item Makes learning more reproducible and simpler.
+%     \end{itemize}
+% \end{frame}
+
+
+
+
+% \section*{Summary of Contributions}
+% \begin{frame}
+%     \frametitle{Summary of Contributions}
+%     \begin{itemize}
+%         \item<1-> Loss-based learning yields meaningful geometric relations in RGB-D data. State-of-the-art results on NYU V2 RGB-D dataset.
+%         \item<2-> Show feasibility of exact learning for image segmentation, state-of-the-art results on MSRC-21, on par with comparable approaches on Pascal VOC 2010.
+%         \item<3-> Well tested, efficient software implementation for learning structured prediction. Already used by other researchers.
+%     \end{itemize}
+% \end{frame}
+
+\section*{Thank you}
+
+
+
+
+
+%\section*{Additional Slides MIL-MKL}
+%\begin{frame}
+
+%\begin{frame}<beamer:0>
+\begin{frame}
+\printbibliography
+\end{frame}
+
+    
+\end{document}
