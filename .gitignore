@@ -102,3 +102,14 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+talk/talk.aux
+talk/talk.bbl
+talk/talk.bcf
+talk/talk.fdb_latexmk
+talk/talk.fls
+talk/talk.nav
+talk/talk.snm
+talk/talk.toc
+talk/talk.blg
+talk/talk.run.xml
+talk/talk.out
