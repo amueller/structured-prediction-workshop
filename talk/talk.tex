@@ -251,11 +251,11 @@
 \end{frame}
 
 \begin{frame}
-    \frametitle{Factor Graphs Mulit-Label Classification}
+    \frametitle{Factor Graphs Multi-Label Classification}
     \begin{center}
         %%\includegraphics[width=.8\textwidth]{images/hmm_white_bg}
     \end{center}
-    FIXME full, chow liu
+    %%FIXME full, chow liu
 \end{frame}
 
 
@@ -308,7 +308,7 @@
         = \max_w \sum_i w^T \psi(x\hoch{i}, y\hoch{i}) - \log(Z)
     \end{align*}
     \end{visibleenv}
-    FIXME relate to LogisticRegression
+    %%FIXME relate to LogisticRegression
 \end{frame}
 
 
@@ -324,18 +324,59 @@
         \end{align*}
     \cite{joachims2009cutting}
     \end{visibleenv}
-    FIXME relate to SVM
-    Advantage: no partition function
+    %%FIXME relate to SVM
+    %%Advantage: no partition function
 \end{frame}
 
+\begin{frame}
+    \frametitle{Compare to Binary SVM}
+    Binary
+    \vspace{-5mm}
+        \begin{align*}
+            &\min_w \frac{1}{2} ||w||^2 + C \sum_i  \max(0, 1- y\hoch{i} w^T x\hoch{i})
+        \end{align*}
+    \begin{visibleenv}<2->
+        Crammer-Singer Multi-Class
+        \begin{align*}
+            &\min_w \frac{1}{2} ||w||^2 + C \sum_i  \ell(x\hoch{i}, y\hoch{i}, w)\\
+            &\ell(x\hoch{i}, y\hoch{i}, w) = [1 + \max_{\hat{y}!=y_i}w_{\hat{y}}^T x\hoch{i} - w_{y\hoch{i}}^T x\hoch{i}]_+.
+        \end{align*}
+    \end{visibleenv}
+    \begin{visibleenv}<3->
+        Structured
+        \begin{align*}
+            &\min_w \frac{1}{2} ||w||^2 + C \sum_i  \ell(x\hoch{i}, y\hoch{i}, w)\\
+            &\ell(x\hoch{i}, y\hoch{i}, w) = [\max_{y \in \mathcal{Y}} \Delta(y\hoch{i}, y) + w^T \psi(x\hoch{i}, y) - w^T \psi(x\hoch{i}, y\hoch{i})]_+.
+        \end{align*}
+    \end{visibleenv}
+
+
+
+\end{frame}
+
+\subsection{Optimizing Structural SVMs}
 
 \begin{frame}
     \frametitle{Subgradient learning}
+    \tiny
+    \setstretch{2}
+    \begin{algorithmic}[1]
+        \Require training samples $\{ (x\hoch{1}, y\hoch{1}), \dots, (x\hoch{k}, y\hoch{k})\}$, regularization parameter $C$, learning rates $\eta_t$.
+        \Ensure parameters $\theta$
+        \State $w \leftarrow 0$
+        \Repeat
+            \For {i=1, \dots, k}
+                $\hat{y} \leftarrow \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] $
+                \State $w \leftarrow (1 - \eta_t) w - \eta_t C [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$
+            \EndFor
+            \vspace{-10mm}
+            \Until stoppint tolerance reached.
+        \end{algorithmic}
 \end{frame}
 
-\begin{frame}
-    \frametitle{N-Slack Quadratic Programming}
-\end{frame}
+% \begin{frame}
+%     \frametitle{N-Slack Quadratic Programming}
+% \end{frame}
 
 \begin{frame}{$n$-slack Cutting Plane Algorithm}
     \addtocounter{framenumber}{-1}
@@ -349,7 +390,7 @@
         \Repeat
             \For {i=1, \dots, k}
                 \State
-                $\hat{y} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] $
+                $\hat{y} \leftarrow \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] $
                 \If{$\displaystyle \delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})] \geq \xi_i + \epsilon$}
                 \State \hspace{-3mm}$\W_i \leftarrow \W_i \cup \{ \hat{y}\} $
                     \State
@@ -367,9 +408,9 @@
     %\end{doublespacing}
 \end{frame}
 
-\begin{frame}
-    \frametitle{1-Slack Quadratic Programming}
-\end{frame}
+% \begin{frame}
+%     \frametitle{1-Slack Quadratic Programming}
+% \end{frame}
 
 \begin{frame}
     \frametitle{$1$-Slack Cutting Plane Training of Structural SVMs}
@@ -390,7 +431,7 @@
             \end{flalign*}
             \For {i=1, \dots, k}
                 \State
-                $\hat{y}\hoch{i} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}) - \theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$ \label{get_cutting_plane}
+                $\hat{y}\hoch{i} \leftarrow \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}) - \theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$ \label{get_cutting_plane}
             \EndFor
             \State $\W \leftarrow \W \cup \{ (\hat{y}\hoch{i}, \dots, \hat{y}\hoch{i}) \} $
             \State $ \displaystyle \xi' \leftarrow  \sum_{i=1}^k \delta(y\hoch{i}, \hat{y}\hoch{i}) - \theta^T \sum_{i=1}^k [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y}\hoch{i})] $
@@ -399,42 +440,42 @@
 \end{frame}
 
 
-\begin{frame}
-    \frametitle{Frank Wolfe}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Frank Wolfe}
+% \end{frame}
 
 
-\begin{frame}
-    \frametitle{Block-Coordinate Frank-Wolfe Algorithm}
-    \tiny
-    \setstretch{1.4}
-    \begin{algorithmic}[1]
-        \Require training samples $\{ (x\hoch{i}, y\hoch{i}), \dots, (x\hoch{i}, y\hoch{i})\}$, regularization parameter $C$, stopping tolerance $\epsilon$.
-        \Ensure parameters $\theta$
-        \State  $\displaystyle \theta_0^{\vphantom{i}}, \theta_0\hoch{i}, \bar{\theta}_0^{\vphantom{i}} \leftarrow \mathbf{0},\quad \ell_0^{\vphantom{i}}, \ell_0\hoch{i}, t \leftarrow 0 $
-        \Repeat
-            \State $t \leftarrow t + 1$
-            \State Pick $i$ uniformly at random from $\{1, \dotsc, k\}$.
-            \State Perform loss-augmented prediction on sample $i$:
-            \Statex[2]   $\hat{y} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \Delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$
-            \State Compute parameter and loss updates based on sample $i$:
-            \Statex[2]     $\theta_s \leftarrow \frac{C}{n} \Phi(x, \hat{y})$
-            \Statex[2]     $\ell_s \leftarrow \frac{C}{n} \delta(y\hoch{i}, \hat{y})$
-            \State Compute optimum step size $\eta$:
-            \Statex[2]    $\eta \leftarrow \frac{(\theta_t\hoch{i} - \theta_s)^T \theta_t + C (\ell_s - \ell_k\hoch{i} )}{\lVert \theta_t\hoch{i} - \theta_s \rVert^2}$ and clip to $[0, 1]$
-            \State Update per-sample parameters and loss estimate:
-            \Statex[2]    $\theta_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \theta_s$
-            \Statex[2]    $\ell_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \ell_s$
-            \State Update global parameters and loss estimate:
-            \Statex[2]   $\theta_{t+1} \leftarrow \theta_{t+1} + \theta_{t}\hoch{i} - \theta_{t+1}\hoch{i}$
-            \Statex[2]   $\ell_{t+1} \leftarrow \ell_{t+1} + \ell_{t}\hoch{i} - \ell_{t+1}\hoch{i}$
-            \State Compute the weighted running average:
-            \Statex[2] $\bar{\theta}_{t+1} = \frac{k}{k + 2} \bar{\theta}_k + \frac{2}{k + 2}\theta_{k+1}$
-        \Until $(\theta - \theta_s)^T\theta - \ell + \ell_s \leq \epsilon$
-        \Statex where $\theta_s$ and $\ell_s$ are recomputed over the whole dataset.
-    \end{algorithmic}
-    %\end{doublespacing}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Block-Coordinate Frank-Wolfe Algorithm}
+%     \tiny
+%     \setstretch{1.4}
+%     \begin{algorithmic}[1]
+%         \Require training samples $\{ (x\hoch{i}, y\hoch{i}), \dots, (x\hoch{i}, y\hoch{i})\}$, regularization parameter $C$, stopping tolerance $\epsilon$.
+%         \Ensure parameters $\theta$
+%         \State  $\displaystyle \theta_0^{\vphantom{i}}, \theta_0\hoch{i}, \bar{\theta}_0^{\vphantom{i}} \leftarrow \mathbf{0},\quad \ell_0^{\vphantom{i}}, \ell_0\hoch{i}, t \leftarrow 0 $
+%         \Repeat
+%             \State $t \leftarrow t + 1$
+%             \State Pick $i$ uniformly at random from $\{1, \dotsc, k\}$.
+%             \State Perform loss-augmented prediction on sample $i$:
+%             \Statex[2]   $\hat{y} \leftarrow I(x\hoch{i}, y\hoch{i}, \theta) := \displaystyle \argmax_{\hat{y}\in\mathcal{Y}} \Delta(y\hoch{i}, \hat{y}) - \theta^T [\Phi(x\hoch{i}, y\hoch{i}) - \Phi(x\hoch{i}, \hat{y})]$
+%             \State Compute parameter and loss updates based on sample $i$:
+%             \Statex[2]     $\theta_s \leftarrow \frac{C}{n} \Phi(x, \hat{y})$
+%             \Statex[2]     $\ell_s \leftarrow \frac{C}{n} \delta(y\hoch{i}, \hat{y})$
+%             \State Compute optimum step size $\eta$:
+%             \Statex[2]    $\eta \leftarrow \frac{(\theta_t\hoch{i} - \theta_s)^T \theta_t + C (\ell_s - \ell_k\hoch{i} )}{\lVert \theta_t\hoch{i} - \theta_s \rVert^2}$ and clip to $[0, 1]$
+%             \State Update per-sample parameters and loss estimate:
+%             \Statex[2]    $\theta_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \theta_s$
+%             \Statex[2]    $\ell_{t+1}\hoch{i} \leftarrow (1 - \eta) \theta_{t+1}\hoch{i} + \eta \ell_s$
+%             \State Update global parameters and loss estimate:
+%             \Statex[2]   $\theta_{t+1} \leftarrow \theta_{t+1} + \theta_{t}\hoch{i} - \theta_{t+1}\hoch{i}$
+%             \Statex[2]   $\ell_{t+1} \leftarrow \ell_{t+1} + \ell_{t}\hoch{i} - \ell_{t+1}\hoch{i}$
+%             \State Compute the weighted running average:
+%             \Statex[2] $\bar{\theta}_{t+1} = \frac{k}{k + 2} \bar{\theta}_k + \frac{2}{k + 2}\theta_{k+1}$
+%         \Until $(\theta - \theta_s)^T\theta - \ell + \ell_s \leq \epsilon$
+%         \Statex where $\theta_s$ and $\ell_s$ are recomputed over the whole dataset.
+%     \end{algorithmic}
+%     %\end{doublespacing}
+% \end{frame}
 
 \section{Structured Prediction with PyStruct}
 
@@ -475,25 +516,25 @@
         \end{center}
     \end{frame}
 
-\begin{frame}
-    \frametitle{Multi-Class SVM}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Multi-Class SVM}
+% \end{frame}
 
-\begin{frame}
-    \frametitle{Multi-Label SVM (independent)}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Multi-Label SVM (independent)}
+% \end{frame}
 
-\begin{frame}
-    \frametitle{Multi-Label SVM (Chow Liu)}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Multi-Label SVM (Chow Liu)}
+% \end{frame}
 
-\begin{frame}
-    \frametitle{Multi-Label SVM (full)}
-\end{frame}
+% \begin{frame}
+%     \frametitle{Multi-Label SVM (full)}
+% \end{frame}
 
-\section{Semantic Segmentation and Edge Features}
+% \section{Semantic Segmentation and Edge Features}
 
-\section{Latent Variable Models}
+% \section{Latent Variable Models}
 % \section{Learning Depth-Sensitive Conditional Random Fields}
 
 % \begin{frame}
