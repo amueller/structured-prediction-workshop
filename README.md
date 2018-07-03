@@ -9,7 +9,7 @@ It's recommended to use conda and create a new clean environment for the worksho
 
 Install prerequisits:
 
-    conda install scikit-learn matplotlib cvxopt ipykernel nb_conda cython
+    conda install scikit-learn matplotlib cvxopt ipykernel nb_conda cython pillow
     pip install pyqpbo
 
 Install pystruct from github:
