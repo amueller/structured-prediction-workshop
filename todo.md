@@ -4,6 +4,7 @@
 - crammer-singer SVM
 - math behind max-product
 - more details on cutting plane
+- loss augmented inference
 
 # notebooks
 - add solutions
