@@ -9,11 +9,11 @@ It's recommended to use conda and create a new clean environment for the worksho
 
 Install prerequisits:
 
-    conda install scikit-learn matplotlib cvxopt ipykernel nb_conda
+    conda install scikit-learn matplotlib cvxopt ipykernel nb_conda cython
     pip install pyqpbo
 
 Install pystruct from github:
 
-    pip install git+https://github.com/pystruct/pystruct.git
+    pip install https://github.com/pystruct/pystruct/archive/master.zip
 
 You can find more materials and documenation on the [pystruct website](http://pystruct.github.io/).
