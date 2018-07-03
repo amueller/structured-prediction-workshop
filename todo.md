@@ -17,11 +17,5 @@
 ## chain crf
 - inference example
 
-## inference on grid
-- add inference on grid example
-
-## snakes
-- add snakes
-
 ## image segmentation
 - add image segmentation
