@@ -4,7 +4,7 @@
 
 It's recommended to use conda and create a new clean environment for the workshop:
 
-    conda env create structured_prediction
+    conda create -n structured_prediction
     conda activate structured_prediction
 
 Install prerequisits:
