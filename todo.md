@@ -7,7 +7,20 @@
 
 # notebooks
 - add solutions
-- inference example on multi-label for tree
-- inference example on multi-label for full graph
-- multi-label show pairwise weights
-- inference example on chain crf
+
+## multi-label
+- inference example for tree
+- inference example for full graph
+- show pairwise weights
+
+## chain crf
+- inference example
+
+## inference on grid
+- add inference on grid example
+
+## snakes
+- add snakes
+
+## image segmentation
+- add image segmentation
