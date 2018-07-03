@@ -15,3 +15,5 @@ Install prerequisits:
 Install pystruct from github:
 
     pip install git+https://github.com/pystruct/pystruct.git
+
+You can find more materials and documenation on the [pystruct website][http://pystruct.github.io/].
